@@ -58,10 +58,10 @@ if (!fs.existsSync(dir)) {
 }
 
 if (!fs.existsSync(file)) {
-  let template = path.join(`src/templates/${type}.js`);
+  let template = path.join(__dirname, `templates/${type}.js`);
 
   if (type === 'mail') {
-    template = path.join(`src/templates/mail.handlebars`);
+    template = path.join(__dirname, `templates/mail.handlebars`);
     file = path.join(dir, `/${fileName}.handlebars`);
   }
 
