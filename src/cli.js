@@ -18,6 +18,7 @@ const commands = [
   'make:mail',
   'make:middleware',
   'make:model',
+  'make:resource',
   'make:service',
   'make:validator',
   'make:test',
@@ -31,6 +32,7 @@ let { argv: args } = yargs
   .command('make:mail <mailName>'.cyan, 'Create a new Mail file.')
   .command('make:middleware <middlewareName>'.cyan, 'Create a new Middleware file.')
   .command('make:model <modelName>'.cyan, 'Create a new Model file.')
+  .command('make:resource <resourceName>'.cyan, 'Create a new Resource file.')
   .command('make:service <serviceName>'.cyan, 'Create a new Service file.')
   .command('make:test <testName>'.cyan, 'Create a new Test file.')
   .command('make:validator <validatorName>'.cyan, 'Create a new Validator file.')
