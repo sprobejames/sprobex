@@ -1,4 +1,4 @@
-function CUSTOM_EXCEPTION (message = 'Model Not Found.') {
+function CUSTOM_EXCEPTION(message = 'Model Not Found.') {
   this.name = 'CUSTOM_EXCEPTION';
   this.message = message;
   var error = new Error(this.message);

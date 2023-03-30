@@ -4,6 +4,7 @@ const path = require('path');
 const yargs = require('yargs');
 const fs = require('fs');
 const replace = require('replace-in-file');
+const seed = require('./seed');
 
 const capitalize = s => (s && s[0].toUpperCase() + s.slice(1)) || "";
 
@@ -22,6 +23,8 @@ const commands = [
   'make:service',
   'make:validator',
   'make:test',
+  'make:seed',
+  'db:seed',
 ];
 
 let { argv: args } = yargs
@@ -36,11 +39,12 @@ let { argv: args } = yargs
   .command('make:service <serviceName>'.cyan, 'Create a new Service file.')
   .command('make:test <testName>'.cyan, 'Create a new Test file.')
   .command('make:validator <validatorName>'.cyan, 'Create a new Validator file.')
+  .command('make:seed <seedName>'.cyan, 'Create a new Seeder file.')
+  .command('db:seed <validatorName>'.cyan, 'Run a single seeder file.')
   .help('h')
   .alias('h', 'help')
   .version("1.0.0")
   .alias('v', 'version');
-
 const [command, fileName = args[0]] = args._;
 if (!command) process.exit(1);
 if (!commands.includes(command)) {
@@ -48,18 +52,23 @@ if (!commands.includes(command)) {
   process.exit(1);
 }
 
-const type = command.split(':')[1];
+const action = command.split(':')[0];
+let type = command.split(':')[1];
 let dir = path.join(`src/${type}s`);
 if (type === 'mail') dir = path.join(`src/views/${type}`);
 if (type === 'validator') dir = path.join(`src/middlewares/${type}s`);
 if (type === 'test') dir = path.join(`src/${type}s/feature`);
+if (type === 'seed') {
+  dir = path.join(`src/database/seeders`);
+  type = 'seeder';
+};
 let file = path.join(dir, `/${fileName}.${type}.js`);
 
-if (!fs.existsSync(dir)) {
-  fs.mkdirSync(dir, { recursive: true });
-}
+if (!fs.existsSync(file) && action === 'make') {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
 
-if (!fs.existsSync(file)) {
   let template = path.join(__dirname, `templates/${type}.js`);
 
   if (type === 'mail') {
@@ -86,8 +95,15 @@ if (!fs.existsSync(file)) {
     };
     replace.sync(options);
   }
+
+  console.log(`${capitalize(type)} created successfully.`.green);
+  console.log(`Created ${capitalize(type)}`.green, file);
+  process.exit(0);
 }
 
-console.log(`${capitalize(type)} created successfully.`.green);
-console.log(`Created ${capitalize(type)}`.green, file);
-process.exit(0);
+if (action == 'db') {
+  (async () => {
+    await seed(fileName);
+    process.exit(0);
+  })();
+}
