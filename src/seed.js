@@ -17,8 +17,8 @@ module.exports = async (fileName) => {
     process.exit(1);
   }
 
-  const { MONGODB_PORT, MONGODB_HOST, MONGODB_USER, MONGODB_PASSWORD } = process.env;
-  const dbUri = `mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_HOST}:${MONGODB_PORT}`;
+  const { MONGODB_PORT, MONGODB_HOST, MONGO_DATABASE, MONGODB_USER, MONGODB_PASSWORD } = process.env;
+  const dbUri = `mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_HOST}:${MONGODB_PORT}/${MONGO_DATABASE}`;
   await mongoose.connect(dbUri, { useNewUrlParser: true }).then(async (connection) => {
     console.log('\n', ' INFO '.bgBlue, 'Seeding Database.', '\n');
     const seeder = require(file);
